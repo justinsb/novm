@@ -114,9 +114,7 @@ class NovmManager(object):
         if vmmopt is None:
             vmmopt = []
         if cmdline is None:
-            cmdline = ""
-        else:
-            cmdline += " "
+            cmdline = []
 
         # Choose the latest kernel by default.
         if kernel is None:
@@ -139,9 +137,10 @@ class NovmManager(object):
         # (Including the packed modules).
         args.extend(["-vmlinux", self._kernels.file(kernel, "vmlinux")])
         args.extend(["-sysmap", self._kernels.file(kernel, "sysmap")])
-        args.extend(["-initrd", self._kernels.file(kernel, "initrd")])
+        #args.extend(["-initrd", self._kernels.file(kernel, "initrd")])
         args.extend(["-setup", self._kernels.file(kernel, "setup")])
         release = open(self._kernels.file(kernel, "release")).read().strip()
+
 
         # Prepare our device callback.
         # (This is done as a callback since run() may
@@ -149,6 +148,7 @@ class NovmManager(object):
         # routines within the novmm process proper.
         def state(output):
             devices = []
+            extra_cmdline = []
 
             # Always add basic devices.
             devices.append(basic.Bios().create())
@@ -273,11 +273,12 @@ class NovmManager(object):
             # available until the devices are built,
             # but we can't build the devices until
             # we're in the novmm process (i.e. forked).
-            args.append("-cmdline=%s%s" % (" ".join([
+            args.append("-cmdline=%s %s %s" % (" ".join([
                 dev.cmdline()
                 for dev in devices
                 if dev.cmdline() is not None
-            ]), cmdline))
+            ]), " ".join(extra_cmdline), " ".join(cmdline)))
+
 
             return args, metadata
 

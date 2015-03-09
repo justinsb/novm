@@ -41,7 +41,7 @@ class NovmShell(object):
             nopci=cli.BoolOpt("Disable PCI devices?"),
             com1=cli.BoolOpt("Enable COM1 UART?"),
             com2=cli.BoolOpt("Enable COM2 UART?"),
-            cmdline=cli.StrOpt("Extra command line options?"),
+            cmdline=cli.ListOpt("Extra command line options?"),
             vmmopt=cli.ListOpt("Options to pass to novmm."),
             nofork=cli.BoolOpt("Don't fork into the background."),
             env=cli.ListOpt("Specify an environment variable."),
