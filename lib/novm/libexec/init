@@ -18,11 +18,11 @@
 echo "~~~ NOVM ~~~" >/dev/kmsg
 
 # Mount proc, etc.
-mount -t proc proc /proc
-mount -t sysfs sysfs /sys
-mount -t tmpfs tmpfs /run
-mount -t devtmpfs devtmpfs /dev
-mount -t devpts devpts /dev/pts
+mount -t proc proc /proc >/dev/kmsg 2>&1
+mount -t sysfs sysfs /sys >/dev/kmsg 2>&1
+mount -t tmpfs tmpfs /run >/dev/kmsg 2>&1
+mount -t devtmpfs devtmpfs /dev >/dev/kmsg 2>&1
+mount -t devpts devpts /dev/pts  >/dev/kmsg 2>&1
 
 # Load all virt-io modules.
 modprobe virtio
