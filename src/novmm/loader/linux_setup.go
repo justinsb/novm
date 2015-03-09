@@ -110,6 +110,8 @@ func SetupLinuxBootParams(
 		switch region.MemoryType {
 		case machine.MemoryTypeUser:
 			memtype = C.E820Ram
+		case machine.MemoryTypeRom:
+			memtype = C.E820Reserved
 		case machine.MemoryTypeReserved:
 			memtype = C.E820Reserved
 		case machine.MemoryTypeSpecial:

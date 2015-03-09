@@ -27,6 +27,8 @@ const (
 	MemoryTypeUser                = 1
 	MemoryTypeAcpi                = 2
 	MemoryTypeSpecial             = 3
+	// TODO: Should we make read-only a property of the region instead?
+	MemoryTypeRom = 4
 )
 
 //
@@ -175,13 +177,15 @@ func (memory *MemoryMap) Reserve(
 	// Do the mapping.
 	switch region.MemoryType {
 	case MemoryTypeUser:
-		err = vm.MapUserMemory(region.Start, region.Size, region.user)
+		err = vm.MapUserMemory(region.Start, region.Size, region.user, false)
 	case MemoryTypeReserved:
 		err = vm.MapReservedMemory(region.Start, region.Size)
 	case MemoryTypeAcpi:
-		err = vm.MapUserMemory(region.Start, region.Size, region.user)
+		err = vm.MapUserMemory(region.Start, region.Size, region.user, false)
 	case MemoryTypeSpecial:
 		err = vm.MapSpecialMemory(region.Start)
+	case MemoryTypeRom:
+		err = vm.MapUserMemory(region.Start, region.Size, region.user, true)
 	}
 
 	return err

@@ -29,6 +29,7 @@ var drivers = map[string]Driver{
 	"pci-bus":             NewPciBus,
 	"pci-hostbridge":      NewPciHostBridge,
 	"user-memory":         NewUserMemory,
+	"rom":                 NewRomMemory,
 	"virtio-pci-block":    NewVirtioPciBlock,
 	"virtio-mmio-block":   NewVirtioMmioBlock,
 	"virtio-pci-console":  NewVirtioPciConsole,

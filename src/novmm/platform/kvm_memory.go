@@ -24,6 +24,7 @@ const int IoctlTranslate = KVM_TRANSLATE;
 
 // IOCTL flags.
 const int IoctlFlagMemLogDirtyPages = KVM_MEM_LOG_DIRTY_PAGES;
+const int IoctlFlagMemReadonly = KVM_MEM_READONLY;
 */
 import "C"
 
@@ -35,16 +36,17 @@ import (
 func (vm *Vm) MapUserMemory(
 	start Paddr,
 	size uint64,
-	mmap []byte) error {
+	mmap []byte,
+	readonly bool) error {
 
-	// See NOTE above about read-only memory.
-	// As we will not support it for the moment,
-	// we do not expose it through the interface.
-	// Leveraging that feature will likely require
-	// a small amount of re-architecting in any case.
+	flags := C.int(0)
+	if readonly {
+		flags |= C.IoctlFlagMemReadonly
+	}
+
 	var region C.struct_kvm_userspace_memory_region
 	region.slot = C.__u32(vm.mem_region)
-	region.flags = C.__u32(0)
+	region.flags = C.__u32(flags)
 	region.guest_phys_addr = C.__u64(start)
 	region.memory_size = C.__u64(size)
 	region.userspace_addr = C.__u64(uintptr(unsafe.Pointer(&mmap[0])))

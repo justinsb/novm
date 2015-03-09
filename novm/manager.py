@@ -32,6 +32,7 @@ from . import block
 from . import serial
 from . import basic
 from . import memory
+from . import rom
 from . import fs
 from . import clock
 from . import pci
@@ -84,6 +85,7 @@ class NovmManager(object):
             init=False,
             nics=None,
             disks=None,
+            roms=None,
             packs=None,
             repos=None,
             read=None,
@@ -103,6 +105,8 @@ class NovmManager(object):
             nics = []
         if disks is None:
             disks = []
+        if roms is None:
+            roms = []
         if packs is None:
             packs = []
         if repos is None:
@@ -168,6 +172,16 @@ class NovmManager(object):
             # Use a PCI bus?
             if not(nopci):
                 devices.append(pci.PciBus().create())
+
+            # ROM memory segments
+            devices.extend([
+                rom.RomMemory().create(
+                    **dict([
+                    opt.split("=", 1)
+                    for opt in opts.split(",")
+                ]))
+                for (index, opts) in zip(list(range(len(roms))), roms)
+            ])
 
             # Enable user-memory.
             devices.append(memory.UserMemory().create(
